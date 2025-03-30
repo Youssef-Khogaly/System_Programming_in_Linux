@@ -13,26 +13,21 @@
 
 ## Build Instructions
 
-1. Clone the repository:
-    ```bash
-    git clone <repository-url>
-    cd pwd
-    ```
 
-2. Create a build directory and navigate to it:
+1. Create a build directory and navigate to it:
     ```bash
     mkdir build
     cd build
     ```
 
-3. Run CMake to configure the project:
+2. Run CMake to configure the project:
     ```bash
     cmake ..
     ```
 
-4. Build the project:
+3. Build the project:
     ```bash
-    cmake --build .
+    make
     ```
 
 ## Usage
