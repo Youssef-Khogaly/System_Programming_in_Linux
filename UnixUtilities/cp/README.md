@@ -10,13 +10,7 @@ This project is a simple implementation of the Unix `cp` command, written in C. 
 
 ## Usage
 
-1. Clone the repository:
-    ```bash
-    git clone https://github.com/your-username/your-repo-name.git
-    cd your-repo-name
-    ```
-
-2. Build the program using CMake:
+1. Build the program using CMake:
     ```bash
     mkdir build
     cd build
@@ -24,21 +18,21 @@ This project is a simple implementation of the Unix `cp` command, written in C. 
     make
     ```
 
-3. Run the program:
+2. Run the program:
     ```bash
-    ./mycp source_file destination
+    ./cp source_file destination
     ```
 
 ## Example
 
 Copy a file to another file:
 ```bash
-./mycp file1.txt file2.txt
+./cp file1.txt file2.txt
 ```
 
 Copy a file to a directory:
 ```bash
-./mycp file1.txt /path/to/destination/
+./cp file1.txt /path/to/destination/
 ```
 
 ## Test Cases
