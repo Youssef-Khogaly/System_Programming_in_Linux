@@ -1,1 +1,0 @@
-/usr/bin/cc -Wl,--dependency-file=CMakeFiles/shell.dir/link.d CMakeFiles/shell.dir/shell.c.o CMakeFiles/shell.dir/echo.c.o -o shell
