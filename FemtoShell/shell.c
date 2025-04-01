@@ -56,6 +56,7 @@ int main()
     {
         printf("Shell:");
         ReadedInputSize = getline(&input, &inputSize, stdin);
+        printf("readed = %ld , size = %lu\n", ReadedInputSize, inputSize); // for debugging
         if (ReadedInputSize == -1)
         {
             printf("Error reading input , errno = %d\n", errno);
@@ -86,7 +87,7 @@ void InputParser(char *input, int size, Commands_t *out)
         return;
     }
     char *str = input;
-    char *temp = malloc(size + 1);
+    char *temp = (char *)malloc(size + 1);
     if (temp == NULL)
     {
         printf("NO ENOUGH MEMORY FOR TEMP \n");
