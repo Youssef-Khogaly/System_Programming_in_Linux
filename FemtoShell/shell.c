@@ -3,7 +3,7 @@
 #include <string.h>
 #include <echo.h>
 #include <errno.h>
-#define INIT_ARGV_CAP (32)
+#define INIT_ARGV_CAP (4)
 #define INPUT_BUFFER_INIT_SIZE (256U)
 typedef struct
 {
@@ -137,7 +137,7 @@ int InputParser(char *input, int size, Commands_t *out)
         if (tempLen > 0)
         {
             temp[tempLen++] = '\0'; // Null terminate the string , ++ to include null terminator in tempLen
-
+            // handling large number of argument
             if (out->argc == (out->argvcapacity - 1))
             {
                 ++(out->argvcapacity);
@@ -163,7 +163,13 @@ int InputParser(char *input, int size, Commands_t *out)
         while (i < size && (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'))
             i++;
     }
-
+    /*keeping  argv[argc] == NULL to meet C standard*/
+    if (out->argc == out->argvcapacity)
+    {
+        ++(out->argvcapacity);
+        out->argv = (char **)realloc(out->argv, out->argvcapacity * sizeof(char *));
+    }
+    out->argv[out->argc] = NULL;
     free(temp);
     return 0;
 }
@@ -181,7 +187,6 @@ int ExecuteCommand(const Commands_t *command)
         printf("\n");
         return 0;
     }
-
     if (!strcmp(command->argv[0], "echo"))
         return echo(command->argc, command->argv);
     else if (!strcmp(command->argv[0], "exit"))
