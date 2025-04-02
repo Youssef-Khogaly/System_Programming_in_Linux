@@ -9,7 +9,7 @@ int echo(int argc, char *argv[])
     char newLine[1] = {'\n'};
     if (argc == 1)
     {
-        write(STDOUT_FILENO, newLine, 1);
+        // nothing
     }
     else
     {

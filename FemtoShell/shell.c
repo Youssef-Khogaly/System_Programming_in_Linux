@@ -68,6 +68,8 @@ int main()
             free_commandCap(&command);
             exit(-1);
         }
+        else if (ReadedInputSize == 1) // new line only
+            continue;
         else
         {
             int ret = InputParser(input, ReadedInputSize, &command);
