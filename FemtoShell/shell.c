@@ -1,50 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <echo.h>
-#include <errno.h>
-#define INIT_ARGV_CAP (4)
-#define INPUT_BUFFER_INIT_SIZE (256U)
-typedef struct
-{
-    int argc;
-    char **argv;
-    int argvcapacity;
-} Commands_t;
-void free_commandBuffers(Commands_t *command)
-{
-    for (int i = 0; i < command->argc; ++i)
-    {
-        if (command->argv[i])
-        {
-            free(command->argv[i]);
-            command->argv[i] = NULL;
-        }
-    }
-    command->argc = 0;
-}
-void free_commandCap(Commands_t *comm)
-{
-    if (comm)
-    {
-        if (comm->argv)
-        {
-            free(comm->argv);
-            comm->argv = NULL;
-            comm->argvcapacity = 0;
-        }
-    }
-}
-/**
- *
- * parse input line to argc and argv
- */
-int InputParser(char *input, int size, Commands_t *out);
+#include <shell.h>
 
-/*
- * validate command and execute it
- */
-int ExecuteCommand(const Commands_t *command);
 int main()
 {
     char *input = (char *)calloc(INPUT_BUFFER_INIT_SIZE, sizeof(char));
@@ -64,18 +19,19 @@ int main()
             fprintf(stderr, "err:getline failled reading line! ,errno = %d\n", errno);
             free(input);
             input = NULL;
-            free_commandBuffers(&command);
-            free_commandCap(&command);
+            free_command(&command);
             exit(-1);
         }
         else if (ReadedInputSize == 1) // new line only
             continue;
         else
         {
+            input[ReadedInputSize - 1] = 0; // remove the readed \n from the buffer
+            --ReadedInputSize;
             int ret = InputParser(input, ReadedInputSize, &command);
             if (ret == -2)
             {
-                fprintf(stderr, "Memory allocation faill , file = %s , line = %d\n", __FILE__, __LINE__);
+                fprintf(stderr, "Memory allocation failure too large command , file = %s , line = %d\n", __FILE__, __LINE__);
             }
             else
             {
@@ -90,24 +46,25 @@ int main()
     }
     free(input);
     input = NULL;
-    free_commandBuffers(&command);
-    free_commandCap(&command);
+    free_command(&command);
     return EXIT_SUCCESS;
 }
 
 /*
     return:
             0 - > success
-            -1 -> Null ptr
-            -2 -> no enough memory
+            -1 -> input or out are null ptr
+            -2 -> memory allocation faill
+            -3 -> size = 0
 */
 int InputParser(char *input, int size, Commands_t *out)
 {
-    if (!input || !out)
+    if (!input || !out || size == 0)
     {
-        printf("null pointer passed to input Parser \n");
         return -1;
     }
+    else if (size == 0)
+        return -3;
 
     char *str = input;
     char *temp = (char *)malloc(size + 1);
@@ -118,17 +75,19 @@ int InputParser(char *input, int size, Commands_t *out)
         return -2;
     }
 
-    // Skip leading spaces
-    while (i < size && (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'))
+    // Skip leading serparator
+    while (i < size && IS_SEPARATOR(str[i]))
         i++;
 
     while (i < size)
     {
         // Reset tempLen for each new token
         tempLen = 0;
-
-        // Copy characters into temp until a space or newline is encountered
-        while (i < size && str[i] != ' ' && str[i] != '\t' && str[i] != '\n')
+        // Skip leading separator
+        while (i < size && IS_SEPARATOR(str[i]))
+            i++;
+        // Copy characters into temp until next separator
+        while (i < size && !IS_SEPARATOR(str[i]))
         {
             temp[tempLen++] = str[i++];
         }
@@ -138,7 +97,7 @@ int InputParser(char *input, int size, Commands_t *out)
         {
             temp[tempLen++] = '\0'; // Null terminate the string , ++ to include null terminator in tempLen
             // handling large number of argument
-            if (out->argc == (out->argvcapacity - 1))
+            if (out->argc == (out->argvcapacity))
             {
                 ++(out->argvcapacity);
                 out->argv = (char **)realloc(out->argv, out->argvcapacity * sizeof(char *));
@@ -155,13 +114,9 @@ int InputParser(char *input, int size, Commands_t *out)
                 free(temp);
                 return -2;
             }
-            strncpy(out->argv[out->argc], temp, tempLen + 1);
+            strncpy(out->argv[out->argc], temp, tempLen);
             ++(out->argc);
         }
-
-        // Skip consecutive spaces/tabs/newlines
-        while (i < size && (str[i] == ' ' || str[i] == '\t' || str[i] == '\n'))
-            i++;
     }
     /*keeping  argv[argc] == NULL to meet C standard*/
     if (out->argc == out->argvcapacity)
@@ -199,4 +154,32 @@ int ExecuteCommand(const Commands_t *command)
         printf("%s: command not found\n", command->argv[0]);
     }
     return 0;
+}
+
+void free_commandBuffers(Commands_t *command)
+{
+    if (!command)
+        return;
+    for (int i = 0; i < command->argc; ++i)
+    {
+        if (command->argv[i])
+        {
+            free(command->argv[i]);
+            command->argv[i] = NULL;
+        }
+    }
+    command->argc = 0;
+}
+void free_command(Commands_t *comm)
+{
+    if (comm)
+    {
+        free_commandBuffers(comm);
+        if (comm->argv)
+        {
+            free(comm->argv);
+            comm->argv = NULL;
+            comm->argvcapacity = 0;
+        }
+    }
 }
