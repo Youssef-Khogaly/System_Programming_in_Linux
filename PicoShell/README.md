@@ -1,11 +1,15 @@
-# FemtoShell
+# PicoShell
 
 ## Requirements
 - CMake 3.10 or higher
 - GCC or any C compiler
-## Building FemtoShell
 
-To build FemtoShell, follow these steps:
+## EnvPath
+Update _ENV_PATH_ macro in shell.h file to absolute path to
+bin directory
+## Building PicoShell
+
+To build PicoShell, follow these steps:
 
 1. Clone the repository:
     ```bash
@@ -14,7 +18,7 @@ To build FemtoShell, follow these steps:
 
 2. Navigate to the project directory:
     ```bash
-    cd FemtoShell
+    cd PicoShell
     ```
 
 3. Create a build directory and navigate into it:
