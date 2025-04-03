@@ -6,6 +6,7 @@ int main()
     size_t inputSize = INPUT_BUFFER_INIT_SIZE;
     ssize_t ReadedInputSize = 0;
     Commands_t command;
+    setenv("PATH", _ENV_PATH_, 1);
     Tokenizer_init(&command);
     while (1)
     {
@@ -52,27 +53,55 @@ int main()
 
 /**
  *
- * return : 0 success
- *          1 exit
+ * return :
+ *           0 success
+ *           1 exit
  */
 int ExecuteCommand(const Commands_t *command)
 {
-
+    pid_t childPid;
+    int wStat;
     if (command->argc == 0)
     {
-        printf("\n");
         return 0;
     }
-    if (!strcmp(command->argv[0], "echo"))
-        return echo(command->argc, command->argv);
-    else if (!strcmp(command->argv[0], "exit"))
-    {
-        printf("Good Bye :)\n");
+    else if (strncmp("exit", command->argv[0], 4) == 0)
         return 1;
+
+    // duplicate current process
+    childPid = fork();
+
+    /*Parent*/
+    if (childPid > 0)
+    {
+        pid_t ret = waitpid(childPid, &wStat, 0);
+        if (-1 == ret)
+        {
+            fprintf(stderr, "waiting child termination fail , errno = %d\n", errno);
+        }
     }
+    else if (childPid == -1) /*Parent , creating child process failed*/
+    {
+        fprintf(stderr, "Error can't create child process , errno = %d\n", errno);
+    }
+    /* Child*/
     else
     {
-        printf("%s: command not found\n", command->argv[0]);
+        execvp(command->argv[0], command->argv);
+        if (errno == ENOENT)
+        {
+            fprintf(stderr, "%s: no such file or command\n", command->argv[0]);
+        }
+        else if (errno == EACCES)
+        {
+            fprintf(stderr, "%s:Access denied\n", command->argv[0]);
+        }
+        else
+        {
+            fprintf(stderr, "error returning from execvp , bin:%s , errno =%d\n", command->argv[0], errno);
+        }
+
+        exit(errno);
     }
     return 0;
 }

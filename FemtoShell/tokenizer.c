@@ -112,7 +112,7 @@ int Tokenize_Line(char *Line, int size, Commands_t *out)
         ++(out->argvCapacity);
         out->argv = (char **)realloc(out->argv, out->argvCapacity * sizeof(char *));
     }
-    out->argv[out->argc] = NULL;
+    out->argv[out->argc] = ((char *)NULL);
     free(temp);
     return 0;
 }
