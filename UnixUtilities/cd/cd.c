@@ -32,7 +32,6 @@ int main(int argc, char *argv[])
             fprintf(stderr, "Error , errno = %d", errno);
             break;
         }
-        exit(errno);
     }
 
     return 0;

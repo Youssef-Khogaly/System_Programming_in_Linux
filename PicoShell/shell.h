@@ -20,7 +20,7 @@
 /*
  * enviroment path for our built in unix utinlity
  */
-#define _ENV_PATH_ ("../bin")
+#define _ENV_PATH_ ("/home/khogaly/sysPro/System_Programming_in_Linux/PicoShell/bin/")
 /*************User Defined types***************/
 
 /****************Macros**************************/
@@ -31,5 +31,5 @@
  * validate command and execute it
  */
 int ExecuteCommand(const Commands_t *command);
-
+void cdCommand(int argc, char *argv[]);
 #endif

@@ -39,6 +39,7 @@ int main()
             {
                 if (1 == ExecuteCommand(&command))
                 {
+                    printf("Good bye");
                     break; // exit command
                 }
             }
@@ -67,7 +68,11 @@ int ExecuteCommand(const Commands_t *command)
     }
     else if (strncmp("exit", command->argv[0], 4) == 0)
         return 1;
-
+    else if (strncmp("cd", command->argv[0], 2) == 0)
+    {
+        cdCommand(command->argc, command->argv);
+        return 0;
+    }
     // duplicate current process
     childPid = fork();
 
@@ -104,4 +109,36 @@ int ExecuteCommand(const Commands_t *command)
         exit(errno);
     }
     return 0;
+}
+
+void cdCommand(int argc, char *argv[])
+{
+    if (argc > 2)
+    {
+        fprintf(stderr, "cd: too many argument\n");
+        return;
+    }
+    else if (argc == 1)
+        return;
+
+    int ret = chdir(argv[1]);
+
+    if (ret == -1)
+    {
+        switch (errno)
+        {
+        case EACCES:
+            fprintf(stderr, "permission is denied\n");
+            break;
+        case ENONET:
+            fprintf(stderr, "The directory specified in path does not exist\n");
+            break;
+        case ENOTDIR:
+            fprintf(stderr, "Not a directory\n");
+            break;
+        default:
+            fprintf(stderr, "Error , errno = %d", errno);
+            break;
+        }
+    }
 }
