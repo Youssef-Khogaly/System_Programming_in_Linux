@@ -5,8 +5,7 @@
 - GCC or any C compiler
 
 ## EnvPath
-Update _ENV_PATH_ macro in shell.h file to absolute path to
-bin directory
+Update ENV PATH macro in shell.h file to bin directory absolute path
 ## Building PicoShell
 
 To build PicoShell, follow these steps:
