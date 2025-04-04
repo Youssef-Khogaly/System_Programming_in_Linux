@@ -58,6 +58,8 @@ int main()
     }
     free(input);
     Tokenizer_free_all(&command);
+    list_clear(&LocalVariablesList);
+    free(LocalVariablesList);
     return EXIT_SUCCESS;
 }
 
