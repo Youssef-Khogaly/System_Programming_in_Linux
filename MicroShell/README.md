@@ -99,28 +99,28 @@ MicroShell supports input and output redirection:
 ### Build with CMake
 MicroShell uses CMake as its build system. To build the project, follow these steps:
 
-1. Clone the GitHub repository.
-        ```bash
+1. Clone the GitHub repository:
+    ```bash
         git clone https://github.com/Youssef-Khogaly/System_Programming_in_Linux
         cd MicroShell
-        ```
+       ```
 
-2. Create a build directory.
-        ```bash
+2. Create a build directory:
+   ```bash
         mkdir build && cd build
         ```
 
-3. Run CMake to configure the project.
-        ```bash
+3. Run CMake to configure the project:
+   ```bash
         cmake ..
         ```
 
-4. Compile the source code.
-        ```bash
+4. Compile the source code:
+   ```bash
         make
         ```
 
-5. Run the shell.
-        ```bash
+5. Run the shell:
+   ```bash
         ./shell
         ```
