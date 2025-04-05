@@ -1,9 +1,5 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <errno.h>
-
-int main()
+#include "pwd.h"
+int pwd()
 {
     char *CurrPath = NULL;
     /*
